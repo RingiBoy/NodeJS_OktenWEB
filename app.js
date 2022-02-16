@@ -8,7 +8,9 @@
 const fs = require("fs");
 const path = require("path");
 
-const x = "null";
+const onlineUsers = {name: "Andrii", age: 22, city: "Lviv" }
+const inPersonUsers = {name: "Dmitriy", age: 37, city: "Kyiv" }
+x=[onlineUsers,inPersonUsers]
 
 // fs.writeFile(path.join(__dirname, "file2.txt"), x, (err)=>{
 //     if (err){
@@ -42,3 +44,22 @@ fs.mkdir(path.join(__dirname, "main", "inPerson"), (err)=>{
         console.log(err);
     }
 })
+
+
+// for (let index = 0; index < array.length; index++) {
+//     const element = array[index];
+    
+// }
+
+for (const iterator of x) {
+    
+    for (const key in iterator) {
+        
+       
+        fs.appendFile(path.join(__dirname, 'app.js'), (`${iterator[key]} `).toString(), (err)=>{
+            if (err){
+                console.log(err);
+            }
+        })
+    }
+}
