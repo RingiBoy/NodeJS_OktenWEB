@@ -1,6 +1,0 @@
-
-NAME:Dmitriy AGE:37 CITY: Kyiv
-
-NAME:Alex AGE:37 CITY: Kyiv
-
-NAME:Serj AGE:37 CITY: Kyiv

@@ -1,6 +1,0 @@
-
-NAME:Andrii AGE:21 CITY: Lviv
-
-NAME:Andrii AGE:2222 CITY: Lviv
-
-NAME:Andrii AGE:44 CITY: Lviv
