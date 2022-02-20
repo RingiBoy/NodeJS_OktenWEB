@@ -1,11 +1,5 @@
-// 1. /login, поля які треба відрендерити в файлі hbs: firstName, lastName, email(унікальне поле), password, age, city
+// 1. /login, поля які треба відрендерити в файлі hbs: firstName, lastName, email(унікальне поле), password, login, city
 // просто зробити темплейт з цим усім і вводити свої дані які будуть пушитися в масив і редірект робити на сторінку з усіма юзерами /users і перевірка чи такий імейл не існує, якщо існує то редірект на еррор пейдж
-
-// 2. /users просто сторінка з усіма юзерами, але можна по квері параметрам їх фільтрувати по age і city
-
-// 3. /user/:id сторінка з інфою про одного юзера
-
-// 4. зробити якщо не відпрацюють ендпоінти то на сторінку notFound редірект
 
 const express = require("express");
 
@@ -14,16 +8,7 @@ const path = require("path");
 const engine = hbs.engine;
 const app = express();
 
-const users = [
-  {
-    firstName: "Dmitriy",
-    lastName: "Grebin",
-    login: "Ringi",
-    password: "qwerty",
-    city: "kiev",
-    email: "Ringi@gmail.com",
-  },
-];
+const users = [];
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -34,34 +19,55 @@ app.set("views", path.join(__dirname, "static"));
 
 app.get("/login", (req, res) => {
   //отдаем нашу страницу логини респонс    /логин
-  const u = users.forEach((users) => {
-    
-  });
 
   res.render("login");
 });
 
-app.get("/users", (req, res) => {
+app.post("/login", ({ body }, res) => {
+  const userExist = users.some((user) => user.email === body.email);
+  if (userExist) {
+    res.render("error");
+    return;
+  }
+  users.push({ ...body, id: new Date().getTime() });
+  console.log(users);
+  res.redirect("users");
+});
+
+// 2. /users просто сторінка з усіма юзерами, але можна по квері параметрам їх фільтрувати по name і city
+
+app.get("/users", ({ query }, res) => {
+  if (Object.keys(query).length) {
+    let newUsers = [...users];
+    if (query.city) {
+      console.log(query.city);
+      newUsers = users.filter((user) => user.city === query.city);
+    }
+    if (query.login) {
+      console.log(query.login);
+      newUsers = users.filter((user) => user.login === query.login);
+    }
+    res.render("users", { users: newUsers });
+    return;
+  }
+
   res.render("users", { users });
 });
 
+// 3. /user/:id сторінка з інфою про одного юзера
 
+app.get("/users/:idUser", ({params}, res) => {
+    console.log(params);
+    
+    const user=users.find(user=>user.id=== +params.idUser)
+    console.log(user);
+    
+    res.render('user', {user}); //перейдя на страницу /1 мы получим нашего юдзера под 1 индексоми выведем на страницу.
+    
+  });
 
-app.get("/users/:idUser", (req, res) => {
-  console.log(req.params);
-  const { idUser } = req.params;
-  res.json(users[idUser]); //перейдя на страницу /1 мы получим нашего юдзера под 1 индексоми выведем на страницу.
-  console.log(req.query);
-});
+// 4. зробити якщо не відпрацюють ендпоінти то на сторінку notFound редірект
 
-app.post("/login", (req, res) => {
-  //////получаем наши данные, но они не смогут прочитаться нодой, для этого нужно ее научить читать джейсон объекты командами :
-  // ////    app.use(express.json());
-  // ////app.use(express.urlencoded({extended:true}))
-  //console.log(req.body);
-  users.push(req.body);
-  res.redirect("/users");
-});
 
 app.use((req, res) => {
   res.render("notFaund");
