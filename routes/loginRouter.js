@@ -1,24 +1,11 @@
 const { Router } = require("express");
 const users = require("../db/users");
+const loginController = require("../controllers/loginController");
 
 const loginRouter = Router();
 
-loginRouter.get("/", (req, res) => {
-  //отдаем нашу страницу логини респонс    /логин
+loginRouter.get("/", loginController.loginRender);
 
-  res.render("login");
-});
-
-loginRouter.post("/", (req, res) => {
-  const { body } = req;
-  const userExist = users.some((user) => user.email === body.email);
-  if (userExist) {
-    res.render("error");
-    return;
-  }
-  users.push({ ...body, id: new Date().getTime() });
-  console.log(users);
-  res.redirect("users");
-});
+loginRouter.post("/", loginController.postUserObject);
 
 module.exports = loginRouter;
