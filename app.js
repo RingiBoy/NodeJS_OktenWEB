@@ -23,7 +23,8 @@ app.get("/login", (req, res) => {
   res.render("login");
 });
 
-app.post("/login", ({ body }, res) => {
+app.post("/login", (req, res) => {
+  const {body}=req;
   const userExist = users.some((user) => user.email === body.email);
   if (userExist) {
     res.render("error");
